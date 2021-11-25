@@ -1,0 +1,27 @@
+.task-layout {
+  text-align: center;
+
+  .card-background-color{
+    background-color: moccasin;
+  }
+  .color-cyan {
+    color: darkcyan;
+  }
+
+  .card-task {
+    background-color: lightblue;
+    color: black;
+    margin: 10px;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .p-card-body {
+    padding: 0px !important;
+  }
+
+  .trash-icon:hover {
+    cursor: pointer;
+  }
+}
