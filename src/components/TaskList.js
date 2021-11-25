@@ -18,6 +18,14 @@ export default function TaskList() {
     setTaskList(taskList.filter((task) => task.ID !== taskID));
   };
 
+  const onDone = (taskID) => {
+    setTaskList(
+      taskList.map((task) => {
+        return task.ID === taskID ? { ...task, isDone: !task.isDone } : task;
+      })
+    );
+  };
+
   return (
     <div className="justify-content-center">
       <h2 className="color-cyan"> Todo List app </h2>
@@ -31,7 +39,14 @@ export default function TaskList() {
               }}
             />
             {taskList?.map((task) => {
-              return <Task key={task.ID} task={task} onDelete={onDelete} />;
+              return (
+                <Task
+                  key={task.ID}
+                  task={task}
+                  onDelete={onDelete}
+                  onDone={onDone}
+                />
+              );
             })}
           </Card>
         </div>

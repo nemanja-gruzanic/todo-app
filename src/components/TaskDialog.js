@@ -18,6 +18,7 @@ export default function TaskDialog(props) {
           description: "",
           dueDate: "",
           priority: "",
+          isDone: false
         }
   );
   const toast = useRef(null);

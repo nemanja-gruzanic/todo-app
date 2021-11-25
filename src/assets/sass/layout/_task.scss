@@ -21,7 +21,16 @@
     padding: 0px !important;
   }
 
-  .trash-icon:hover {
+  .trash-icon{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .check-icon, .trash-icon {
+    font-size: 20px;
+  }
+
+  .trash-icon:hover, .check-icon:hover {
     cursor: pointer;
   }
 }
