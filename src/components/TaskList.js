@@ -8,9 +8,28 @@ import Task from "./Task";
 export default function TaskList() {
   const [visibleDialog, setVisibleDialog] = useState(false);
   const [taskList, setTaskList] = useState([]);
+  const [taskForChange, setTaskForChange] = useState();
 
   const onSave = (task) => {
-    taskList.push(task);
+    setTaskList([...taskList, task]);
+    setVisibleDialog(false);
+  };
+
+  const onUpdate = (newTask) => {
+    setTaskList(
+      taskList.map((task) => {
+        return task.ID === newTask.ID
+          ? {
+              ID: newTask.ID,
+              name: newTask.name,
+              description: newTask.description,
+              dueDate: newTask.dueDate,
+              priority: newTask.priority,
+              isDone: newTask.isDone,
+            }
+          : task;
+      })
+    );
     setVisibleDialog(false);
   };
 
@@ -45,6 +64,8 @@ export default function TaskList() {
                   task={task}
                   onDelete={onDelete}
                   onDone={onDone}
+                  setVisibleDialog={setVisibleDialog}
+                  setTaskForChange={setTaskForChange}
                 />
               );
             })}
@@ -56,6 +77,9 @@ export default function TaskList() {
         setVisibleDialog={setVisibleDialog}
         setTaskList={setTaskList}
         onSave={onSave}
+        onUpdate={onUpdate}
+        taskForChange={taskForChange}
+        setTaskForChange={setTaskForChange}
       />
     </div>
   );

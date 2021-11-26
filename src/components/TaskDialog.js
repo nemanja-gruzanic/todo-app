@@ -4,24 +4,37 @@ import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Toast } from "primereact/toast";
 
 export default function TaskDialog(props) {
-  const [task, setTask] = useState(
-    props?.task
-      ? props?.task
-      : {
-          ID: "",
-          name: "",
-          description: "",
-          dueDate: "",
-          priority: "",
-          isDone: false
-        }
-  );
+  const {
+    taskForChange,
+    onSave,
+    onUpdate,
+    setVisibleDialog,
+    visibleDialog,
+    setTaskForChange,
+  } = props;
   const toast = useRef(null);
+  const [task, setTask] = useState(
+    taskForChange ?? {
+      ID: "",
+      name: "",
+      description: "",
+      dueDate: "",
+      priority: "",
+      isDone: false,
+    }
+  );
+
+  useEffect(() => {
+    if (taskForChange && taskForChange.ID !== "") {
+      setTask(taskForChange);
+    }
+  }, [taskForChange]);
+
   const dropdownOptions = [
     { label: "Low", value: "Low" },
     { label: "Medium", value: "Medium" },
@@ -35,7 +48,14 @@ export default function TaskDialog(props) {
           label="Save"
           icon="pi pi-save"
           onClick={() => {
-            if (validateTask()) props.onSave({ ...task, ID: uuidv4() });
+            if (validateTask()) {
+              if (taskForChange) {
+                onUpdate(task);
+              } else {
+                onSave({ ...task, ID: uuidv4() });
+              }
+              resetData();
+            }
           }}
           className="p-button-success"
         />
@@ -43,8 +63,20 @@ export default function TaskDialog(props) {
     );
   };
 
+  const resetData = () => {
+    setTaskForChange(undefined);
+    setTask({
+      ID: "",
+      name: "",
+      description: "",
+      dueDate: "",
+      priority: "",
+      isDone: false,
+    });
+  };
+
   const validateTask = () => {
-    if(!task.name || !task.name.trim()) {
+    if (!task.name || !task.name.trim()) {
       toast.current.show({
         severity: "error",
         detail: "The name is required field",
@@ -79,9 +111,12 @@ export default function TaskDialog(props) {
   return (
     <Dialog
       className="col-12 sm:col-12 md:col-6 lg:col-6 xl:col-6"
-      visible={props.visibleDialog}
+      visible={visibleDialog}
       footer={footer}
-      onHide={() => props.setVisibleDialog(false)}
+      onHide={() => {
+        setVisibleDialog(false);
+        resetData();
+      }}
     >
       <div>
         <div className="grid">
@@ -108,11 +143,7 @@ export default function TaskDialog(props) {
                 <Calendar
                   showButtonBar
                   dateFormat={"dd.mm.yy."}
-                  value={
-                    props?.task?.dueDate
-                      ? new Date(props?.task?.dueDate)
-                      : undefined
-                  }
+                  value={task?.dueDate ? new Date(task?.dueDate) : undefined}
                   onChange={(e) => {
                     setTask({ ...task, dueDate: e.value });
                   }}
