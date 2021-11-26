@@ -1,14 +1,27 @@
 import { Card } from "primereact/card";
 
 import { Button } from "primereact/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TaskDialog from "./TaskDialog";
 import Task from "./Task";
+
+const STORAGE_KEY = "task-list";
 
 export default function TaskList() {
   const [visibleDialog, setVisibleDialog] = useState(false);
   const [taskList, setTaskList] = useState([]);
   const [taskForChange, setTaskForChange] = useState();
+
+  useEffect(() => {
+    const savedTaskList = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (savedTaskList) {
+      setTaskList(savedTaskList);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(taskList));
+  }, [taskList]);
 
   const onSave = (task) => {
     setTaskList([...taskList, task]);
